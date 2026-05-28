@@ -29,14 +29,13 @@ while (true) {
     echo "───────────────────────────\n";
     echo "Entrez un coup (format: 'from to')\n";
     echo "Exemple: '6:4 4:4' (pion blanc e2 vers e4)\n";
-    echo "Ou: '6 4 4 4' (format avec espaces)\n";
     echo "Tapez 'quit' pour quitter\n";
     echo "> ";
     
     $input = trim(fgets(STDIN));
     
-    if (strtolower($input) === 'quit') {
-        echo "\nPartie terminée. Au revoir !\n";
+    if (strtolower($input) === 'exit') {
+        echo "\nPartie terminée.\n";
         break;
     }
     
