@@ -82,14 +82,30 @@ class Board implements Renderable {
     public function render(): string {
         $output = "";
         
+        $output .= "    ";
+        for ($col = 0; $col < 8; $col++) {
+            $output .= $col . "   ";
+        }
+        $output .= "\n";
+        
+        $output .= "  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n";
+        
         for ($row = 0; $row < 8; $row++) {
+            $output .= $row . " │";
             for ($col = 0; $col < 8; $col++) {
                 $pos = new Position($row, $col);
                 $piece = $this->getPieceAt($pos);
-                $output .= ($piece !== null) ? $piece->render() : ".";
+                $cellContent = ($piece !== null) ? $piece->render() : " ";
+                $output .= " " . $cellContent . " │";
             }
             $output .= "\n";
+            
+            if ($row < 7) {
+                $output .= "  ├───┼───┼───┼───┼───┼───┼───┼───┤\n";
+            }
         }
+        
+        $output .= "  └───┴───┴───┴───┴───┴───┴───┴───┘\n";
         
         return $output;
     }
