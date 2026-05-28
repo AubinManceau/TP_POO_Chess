@@ -54,27 +54,37 @@ class Game {
             throw new InvalidMoveException();
         }
 
+        $capturedPiece = $this->board->getPieceAt($move->getTo());
+
         $this->board->movePiece($move->getFrom(), $move->getTo());
 
-        $this->isCheck($this->currentPlayer);
+        if ($this->isCheck($this->currentPlayer)) {
+            $this->board->movePiece($move->getTo(), $move->getFrom());
+            
+            if ($capturedPiece !== null) {
+                $this->board->placePiece($capturedPiece);
+            }
+            
+            throw new InvalidMoveException();
+        }
         
         $this->switchPlayer();
     }
 
     public function isCheck(PieceColor $color): bool {
-        $opponentKingPos = $this->board->getKingPosition($color->opposite());
-        if ($opponentKingPos === null) {
+        $kingPos = $this->board->getKingPosition($color);
+        if ($kingPos === null) {
             return false;
         }
 
         $allPieces = $this->board->getPieces();
 
         foreach ($allPieces as $piece) {
-            if ($piece->getColor() !== $color) {
+            if ($piece->getColor() !== $color->opposite()) {
                 continue;
             }
 
-            if ($piece->canMove($this->board, $opponentKingPos)) {
+            if ($piece->canMove($this->board, $kingPos)) {
                 return true;
             }
         }
