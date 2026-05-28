@@ -56,10 +56,29 @@ class Game {
 
         $this->board->movePiece($move->getFrom(), $move->getTo());
 
+        $this->isCheck($this->currentPlayer);
+        
         $this->switchPlayer();
     }
 
     public function isCheck(PieceColor $color): bool {
+        $opponentKingPos = $this->board->getKingPosition($color->opposite());
+        if ($opponentKingPos === null) {
+            return false;
+        }
+
+        $allPieces = $this->board->getPieces();
+
+        foreach ($allPieces as $piece) {
+            if ($piece->getColor() !== $color) {
+                continue;
+            }
+
+            if ($piece->canMove($this->board, $opponentKingPos)) {
+                return true;
+            }
+        }
+
         return false;
     }
 

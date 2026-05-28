@@ -7,7 +7,6 @@ use App\Enum\PieceColor;
 use App\Enum\PieceType;
 use App\Position;
 use App\Board;
-use App\Exception\OccupiedByAllyException;
 
 abstract class Piece implements Renderable {
     protected PieceColor $color;
