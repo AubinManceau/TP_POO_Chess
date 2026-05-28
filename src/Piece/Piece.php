@@ -67,6 +67,21 @@ abstract class Piece implements Renderable {
         return $pieceAtTarget !== null && $pieceAtTarget->getColor() === $this->getColor();
     }
 
+    public function isPromotionPosition(Position $target): bool {
+        if ($this->type !== PieceType::PAWN) {
+            return false;
+        }
+
+        $row = $target->getRow();
+        if ($this->color === PieceColor::WHITE && $row === 0) {
+            return true;
+        }
+        if ($this->color === PieceColor::BLACK && $row === 7) {
+            return true;
+        }
+        return false;
+    }
+
     abstract protected function isValidMovementShape(Position $target): bool;
 
     abstract public function render(): string;

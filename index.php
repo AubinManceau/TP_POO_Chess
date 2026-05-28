@@ -6,6 +6,8 @@ use App\Game;
 use App\Move;
 use App\Position;
 use App\Exception\ChessException;
+use App\Exception\PromotionRequiredException;
+use App\Enum\PieceType;
 
 $game = new Game();
 
@@ -51,6 +53,38 @@ while (true) {
         echo $game->getBoard()->render();
         echo "\n";
         
+    } catch (PromotionRequiredException $e) {
+        echo "\n" . $e->getMessage() . "\n";
+        echo "\nChoisissez la pièce de promotion :\n";
+        echo "  1 - Dame (Queen)\n";
+        echo "  2 - Tour (Rook)\n";
+        echo "  3 - Fou (Bishop)\n";
+        echo "  4 - Cavalier (Knight)\n";
+        echo "> ";
+        
+        $choice = trim(fgets(STDIN));
+        
+        $promotionType = match ($choice) {
+            '1' => PieceType::QUEEN,
+            '2' => PieceType::ROOK,
+            '3' => PieceType::BISHOP,
+            '4' => PieceType::KNIGHT,
+            default => null
+        };
+        
+        if ($promotionType === null) {
+            echo "\n❌ Choix invalide. Promotion avec Dame par défaut.\n\n";
+            $promotionType = PieceType::QUEEN;
+        }
+        
+        try {
+            $game->promotePiece($move->getTo(), $promotionType);
+            echo "\n✓ Pion promu en " . $promotionType->name . " !\n";
+            echo $game->getBoard()->render();
+            echo "\n";
+        } catch (ChessException $promotionError) {
+            echo "\n❌ Erreur de promotion : " . $promotionError->getMessage() . "\n\n";
+        }
     } catch (ChessException $e) {
         echo "\n❌ Erreur : " . $e->getMessage() . "\n\n";
     } catch (Exception $e) {

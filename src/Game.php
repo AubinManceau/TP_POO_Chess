@@ -8,6 +8,7 @@ use App\Exception\InvalidMoveException;
 use App\Exception\NoPieceException;
 use App\Exception\WrongTurnException;
 use App\Exception\OccupiedByAllyException;
+use App\Exception\PromotionRequiredException;
 use App\Factory\PieceFactory;
 use App\Move;
 use App\Position;
@@ -67,6 +68,10 @@ class Game {
             
             throw new InvalidMoveException();
         }
+
+        if ($piece->isPromotionPosition($move->getTo())) {
+            throw new PromotionRequiredException();
+        }
         
         $this->switchPlayer();
     }
@@ -119,6 +124,18 @@ class Game {
             $this->board->placePiece($this->pieceFactory->create(PieceType::PAWN, PieceColor::WHITE, new Position(6, $col)));
         }
 
+    }
+
+    public function promotePiece(Position $position, PieceType $type): void {
+        if ($type === PieceType::PAWN || $type === PieceType::KING) {
+            throw new InvalidMoveException();
+        }
+
+        $this->board->removePieceAt($position);
+        $promotedPiece = $this->pieceFactory->create($type, $this->currentPlayer, $position);
+        $this->board->placePiece($promotedPiece);
+        
+        $this->switchPlayer();
     }
 
     private function switchPlayer(): void {
