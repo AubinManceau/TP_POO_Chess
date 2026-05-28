@@ -1,0 +1,9 @@
+{
+    "name": "poo/chess-app",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {}
+}
